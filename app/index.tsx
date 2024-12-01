@@ -205,11 +205,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#CBD5E1",
+    backgroundColor: "#FAFAF9",
   },
   container: {
     flex: 1,
-    backgroundColor: "#CBD5E1",
+    backgroundColor: "#FAFAF9",
   },
   searchContainer: {
     display: "flex",
