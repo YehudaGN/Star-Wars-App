@@ -73,17 +73,15 @@ export default function Home() {
           setError('');
         } else {
           // Display no results message
-          console.log('yooo?')
-          // setNoSearchResultsInTerm(true);
           setError('Sorry! There are no results with that search term. Please try again or refresh the page.')
         }
       } else {
-        // render error
+        // Display Error
         setError("There was an issue fetching the data. Please try again later.");
       }
     } else {
       if (searchResults) {
-        setSearchResults(null);
+        handleRefreshSearch();
       }
     }
   };
@@ -178,14 +176,14 @@ export default function Home() {
             />
           )}
           {/* Display errors */}
-          {error && (
+          {error ? (
             <View style={styles.noResults}>
               <Text style={styles.noResultsText}>
                 {error}
               </Text>
               <Button title='Refresh' onPress={handleRefreshSearch}/>
             </View>
-          )}
+          ) : null}
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
