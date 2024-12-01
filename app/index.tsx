@@ -50,6 +50,7 @@ export default function Home() {
     handleRefresh,
     loadNextPage,
     initialLoader,
+    fetchError
   } = usePagination();
 
   const renderLoadingFooter = () => {
@@ -102,12 +103,7 @@ export default function Home() {
   };
 
   return initialLoader || loading ? (
-    <View>
-      <Stack.Screen
-        options={{
-          title: "Star Wars Info",
-        }}
-      />
+    <View style={styles.initialLoader}>
       <ActivityIndicator size="large" />
     </View>
   ) : (
@@ -132,7 +128,7 @@ export default function Home() {
 
         <View style={styles.listContainer}>
           {/* Don't display if the user is searching for a specific person */}
-          {!searchResults && !error && (
+          {!searchResults && !error && !fetchError && (
             <FlatList
               style={{
                 width: dimensions.window.width,
@@ -160,7 +156,7 @@ export default function Home() {
             />
           )}
           {/* Display search results */}
-          {searchResults && !error && (
+          {searchResults && !error && !fetchError && (
             <FlatList
               style={{
                 width: dimensions.window.width,
@@ -185,10 +181,15 @@ export default function Home() {
             />
           )}
           {/* Display errors */}
-          {error ? (
+          {error || fetchError ? (
             <View style={styles.noResults}>
-              <Text style={styles.noResultsText}>{error}</Text>
-              <Button title="Refresh" onPress={handleRefreshSearch} />
+              <Text style={styles.noResultsText}>{error || fetchError}</Text>
+              {
+                error ? 
+                <Button title="Refresh" onPress={handleRefreshSearch} />
+                : 
+                <Button title="Refresh" onPress={handleRefresh} />
+              }
             </View>
           ) : null}
         </View>
@@ -198,6 +199,12 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
+  initialLoader: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }, 
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,

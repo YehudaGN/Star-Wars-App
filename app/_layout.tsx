@@ -9,6 +9,7 @@ export default function RootLayout() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        title: 'Star Wars Info'
       }}>
     <Stack.Screen name="PersonDetails/[id]" options={{}} />
   </Stack>;

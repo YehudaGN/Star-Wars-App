@@ -1,35 +1,15 @@
 import {
-  Button,
   Text,
   View,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
 } from "react-native";
-import { useState, useEffect } from "react";
 import { useRouter } from 'expo-router';
 
-// const windowDimensions = Dimensions.get("window");
-// const screenDimensions = Dimensions.get("screen");
 
 const PersonItem = props => {
   const { personDetails } = props;
   const router = useRouter();
-
-//   const [dimensions, setDimensions] = useState({
-//     window: windowDimensions,
-//     screen: screenDimensions,
-//   });
-
-//   useEffect(() => {
-//     const subscription = Dimensions.addEventListener(
-//       "change",
-//       ({ window, screen }) => {
-//         setDimensions({ window, screen });
-//       }
-//     );
-//     return () => subscription?.remove();
-//   });
 
   const handleNavigate = () => {
     router.push(`/PersonDetails/${personDetails.id}`)
