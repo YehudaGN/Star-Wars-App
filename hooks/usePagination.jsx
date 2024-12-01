@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import apiFetch from '../services/apiFetch';
 
 const initialData = {
     data: [],
@@ -19,7 +20,8 @@ const usePagination = () => {
 
     const fetchData = async (page, perPage = 10) => {
         try {
-            const res = await fetch(`https://swapi.dev/api/people/?page=${pageNo}`);
+            // const res = await fetch(`https://swapi.dev/api/people/?page=${pageNo}`);
+            const res = await apiFetch('https://swapi.dev/api/people/', {key: 'page', value: pageNo});
             const resultOld = await res.json();
 
             const result = {

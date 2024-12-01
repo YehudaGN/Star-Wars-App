@@ -9,27 +9,27 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from 'expo-router';
 
-const windowDimensions = Dimensions.get("window");
-const screenDimensions = Dimensions.get("screen");
+// const windowDimensions = Dimensions.get("window");
+// const screenDimensions = Dimensions.get("screen");
 
 const PersonItem = props => {
   const { personDetails } = props;
   const router = useRouter();
 
-  const [dimensions, setDimensions] = useState({
-    window: windowDimensions,
-    screen: screenDimensions,
-  });
+//   const [dimensions, setDimensions] = useState({
+//     window: windowDimensions,
+//     screen: screenDimensions,
+//   });
 
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener(
-      "change",
-      ({ window, screen }) => {
-        setDimensions({ window, screen });
-      }
-    );
-    return () => subscription?.remove();
-  });
+//   useEffect(() => {
+//     const subscription = Dimensions.addEventListener(
+//       "change",
+//       ({ window, screen }) => {
+//         setDimensions({ window, screen });
+//       }
+//     );
+//     return () => subscription?.remove();
+//   });
 
   const handleNavigate = () => {
     router.push(`/PersonDetails/${personDetails.id}`)
@@ -62,10 +62,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#1dcec6",
     width: "95%",
+    maxWidth: 500,
+    borderWidth: 1,
+    borderColor: '#676767',
     borderRadius: 5,
     paddingVertical: 16,
     paddingHorizontal: 10,
     marginVertical: 4,
+    shadowColor: '#676767',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   details: {
     color: "#083533",

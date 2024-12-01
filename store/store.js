@@ -1,7 +1,5 @@
-import { configureStore, applyMiddleware } from "@reduxjs/toolkit";
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
-
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 // Initial state
 const initialState = {
   people: []

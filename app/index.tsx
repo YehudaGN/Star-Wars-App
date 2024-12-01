@@ -6,13 +6,16 @@ import {
   Dimensions,
   StyleSheet,
   StatusBar,
+  RefreshControl,
+  TextInput,
+  Button,
+  Text,
 } from "react-native";
 import PersonItem from "../components/PersonItem";
 import usePagination from "../hooks/usePagination";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { Stack } from 'expo-router';
-
-
+import { Stack } from "expo-router";
+import searchPerson from "../services/searchPerson";
 
 const windowDimensions = Dimensions.get("window");
 const screenDimensions = Dimensions.get("screen");
@@ -23,6 +26,11 @@ export default function Home() {
     screen: screenDimensions,
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [noSearchResultsInTerm, setNoSearchResultsInTerm] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
       "change",
@@ -32,7 +40,6 @@ export default function Home() {
     );
     return () => subscription?.remove();
   }, []);
-
 
   const {
     data,
@@ -49,44 +56,129 @@ export default function Home() {
     return <ActivityIndicator animating size="large" />;
   };
 
-  return initialLoader ? (
-    <ActivityIndicator size="large" />
+  const handleSearch = async () => {
+    if (searchTerm) {
+      setLoading(true);
+      const res = await searchPerson(searchTerm);
+      console.log("res", res);
+      setLoading(false);
+      if (res.status === 200) {
+        const jsonResponse = await res.json();
+        console.log("json", jsonResponse);
+        if (jsonResponse.count > 0) {
+          setSearchResults(jsonResponse.results);
+          setNoSearchResultsInTerm(false);
+          // display results
+        } else {
+          // render sorry no results
+          setNoSearchResultsInTerm(true);
+        }
+      } else {
+        // render error
+      }
+    } else {
+      if (searchResults) {
+        setSearchResults(null);
+      }
+    }
+  };
+
+  const handleRefreshSearch = () => {
+    setSearchResults(null);
+    setSearchTerm("");
+  };
+
+  return initialLoader || loading ? (
+    <View>
+      <Stack.Screen
+        options={{
+          title: "Star Wars Info",
+        }}
+      />
+      <ActivityIndicator size="large" />
+    </View>
   ) : (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: 'Star Wars Info',
-        }}
-      />
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 2,
+        <Stack.Screen
+          options={{
+            title: "Star Wars Info",
           }}
-        >
-          <FlatList
-            style={{
-              width: dimensions.window.width,
-              display: "flex",
-            }}
-            data={data}
-            renderItem={({ item }) => {
-              console.log(item);
-              const personDetails = {
-                name: item.name,
-                birthYear: item.birth_year,
-                gender: item.gender[0].toUpperCase() + item.gender.slice(1),
-                id: item.url.match(/\/people\/(\d+)\//)[1],
-              };
-              return <PersonItem personDetails={personDetails} />;
-            }}
-            ListFooterComponent={renderLoadingFooter}
-            onEndReached={loadNextPage}
-            onEndReachedThreshold={0.1}
+        />
+
+        <View style={styles.searchContainer}>
+          <TextInput
+          style={styles.searchInput}
+            placeholder="Enter a name"
+            value={searchTerm}
+            onChangeText={setSearchTerm}
+            // submit?
           />
+          <Button title="Search" onPress={handleSearch} color='#14aea7'/>
+        </View>
+
+        <View style={styles.listContainer}>
+          {/* Don't display if the user is searching for a specific person */}
+          {!searchResults && (
+            <FlatList
+              style={{
+                width: dimensions.window.width,
+                display: "flex",
+              }}
+              data={data}
+              renderItem={({ item }) => {
+                // console.log(item);
+                const personDetails = {
+                  name: item.name,
+                  birthYear: item.birth_year,
+                  gender: item.gender[0].toUpperCase() + item.gender.slice(1),
+                  id: item.url.match(/\/people\/(\d+)\//)[1],
+                };
+                return <PersonItem personDetails={personDetails} />;
+              }}
+              ListFooterComponent={renderLoadingFooter}
+              onEndReached={loadNextPage}
+              onEndReachedThreshold={0.1}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh}
+                />
+              }
+            />
+          )}
+          {searchResults && !noSearchResultsInTerm && (
+            <FlatList
+              style={{
+                width: dimensions.window.width,
+                display: "flex",
+              }}
+              data={searchResults}
+              renderItem={({ item }) => {
+                const personDetails = {
+                  name: item.name,
+                  birthYear: item.birth_year,
+                  gender: item.gender[0].toUpperCase() + item.gender.slice(1),
+                  id: item.url.match(/\/people\/(\d+)\//)[1],
+                };
+                return <PersonItem personDetails={personDetails} />;
+              }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefreshSearch}
+                />
+              }
+            />
+          )}
+          {searchResults && noSearchResultsInTerm && (
+            <View style={styles.noResults}>
+              <Text style={styles.noResultsText}>
+                Sorry! There are no results with that search term. Please try
+                again or refresh the page.
+              </Text>
+            </View>
+          )}
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -97,6 +189,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+    
+  },
+  searchContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 5,
+    // backgroundColor: 'red',
+    width: '100%',
+    marginVertical: 10,
+    paddingBottom: 10,
+    shadowColor: '#676767',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  searchInput: {
+    width: 250,
+    fontFamily: "Trebuchet MS",
+    fontSize: 16,
+    paddingLeft: 4,
+    color: '#676767',
+  }, 
+  searchButton: {
+    width: 300,
+    borderRadius: '50%'
+  },
+  listContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 2,
+  },
+  noResults: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  noResultsText: {
+    width: "95%",
+    fontSize: 16,
+    fontFamily: "Trebuchet MS",
+    textAlign: "center",
+    color: "#083533",
   },
   // item: {
   //   backgroundColor: '#f9c2ff',
