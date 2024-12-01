@@ -1,30 +1,29 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import { useRouter } from 'expo-router';
-
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
 const PersonItem = props => {
   const { personDetails } = props;
   const router = useRouter();
 
   const handleNavigate = () => {
-    router.push(`/PersonDetails/${personDetails.id}`)
+    router.push(`/PersonDetails/${personDetails.id}`);
   };
 
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity style={styles.container} onPress={handleNavigate}>
-        <Text style={[styles.details, styles.name]}>
-          Name: {personDetails.name}
-        </Text>
-        <Text style={styles.details}>
-          Birth Year: {personDetails.birthYear}
-        </Text>
-        <Text style={styles.details}>Gender: {personDetails.gender}</Text>
+        <View style={styles.details}>
+          <Text style={[styles.label, styles.nameLabel]}>Name:</Text>
+          <Text style={[styles.value, styles.name]}>{personDetails.name}</Text>
+        </View>
+        <View style={styles.details}>
+          <Text style={styles.label}>Birth Year:</Text>
+          <Text style={styles.value}>{personDetails.birthYear}</Text>
+        </View>
+        <View style={[styles.details, styles.gender]}>
+          <Text style={styles.label}>Gender:</Text>
+          <Text style={styles.value}>{personDetails.gender}</Text>
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -40,31 +39,46 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    backgroundColor: "#1dcec6",
+    backgroundColor: "#0F172A",
     width: "95%",
     maxWidth: 500,
     borderWidth: 1,
-    borderColor: '#676767',
+    borderColor: "#CBD5E1",
     borderRadius: 5,
     paddingVertical: 16,
     paddingHorizontal: 10,
     marginVertical: 4,
-    shadowColor: '#676767',
-    shadowOffset: {width: -2, height: 4},
+    shadowColor: "#676767",
+    shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
   },
   details: {
-    color: "#083533",
-    fontSize: 18,
+    display: "flex",
+    flexDirection: "row",
+    gap: 10,
+    maxWidth: 350,
+    alignItems: "center",
+  },
+  label: {
+    color: "#94A3B8",
+    fontSize: 14,
     fontWeight: 500,
     fontFamily: "Trebuchet MS",
   },
-  name: {
-    fontSize: 24,
+  value: {
+    color: "#06B6D4",
+    fontSize: 14,
     fontWeight: 500,
     fontFamily: "Georgia",
+  },
+  nameLabel: {
+    fontSize: 24,
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: 700,
   },
 });
 

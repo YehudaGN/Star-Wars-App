@@ -117,7 +117,7 @@ export default function Home() {
             onChangeText={setSearchTerm}
             onSubmitEditing={handleSearch}
           />
-          <Button title="Search" onPress={handleSearch} color="#14aea7" />
+          <Button title="Search" onPress={handleSearch} color="#0F172A" />
         </View>
 
         <View style={styles.listContainer}>
@@ -179,9 +179,17 @@ export default function Home() {
             <View style={styles.noResults}>
               <Text style={styles.noResultsText}>{error || fetchError}</Text>
               {error ? (
-                <Button title="Refresh" onPress={handleRefreshSearch} />
+                <Button
+                  title="Refresh"
+                  onPress={handleRefreshSearch}
+                  color="#0F172A"
+                />
               ) : (
-                <Button title="Refresh" onPress={handleRefresh} />
+                <Button
+                  title="Refresh"
+                  onPress={handleRefresh}
+                  color="#0F172A"
+                />
               )}
             </View>
           ) : null}
@@ -197,9 +205,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#CBD5E1",
   },
   container: {
     flex: 1,
+    backgroundColor: "#CBD5E1",
   },
   searchContainer: {
     display: "flex",
@@ -209,13 +219,13 @@ const styles = StyleSheet.create({
     gap: 5,
     width: "100%",
     borderBottomWidth: 1,
-    borderColor: '#849494',
+    borderColor: "#849494",
     paddingVertical: 10,
     shadowColor: "#676767",
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
-    elevation: 1
+    elevation: 1,
   },
   searchInput: {
     width: 250,
