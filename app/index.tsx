@@ -28,10 +28,9 @@ export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(null);
-  // const [noSearchResultsInTerm, setNoSearchResultsInTerm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -61,23 +60,33 @@ export default function Home() {
   const handleSearch = async () => {
     if (searchTerm) {
       setLoading(true);
-      const res = await searchPerson(searchTerm);
-      console.log("res", res);
-      setLoading(false);
-      if (res.status === 200) {
-        const jsonResponse = await res.json();
-        console.log("json", jsonResponse);
-        if (jsonResponse.count > 0) {
-          // Display search results
-          setSearchResults(jsonResponse.results);
-          setError('');
+      try {
+        const res = await searchPerson(searchTerm);
+        setLoading(false);
+        if (res.status === 200) {
+          const jsonResponse = await res.json();
+          if (jsonResponse.count > 0) {
+            // Display search results
+            setSearchResults(jsonResponse.results);
+            setError("");
+          } else {
+            // Display no results message
+            setError(
+              "Sorry! There are no results with that search term. Please try again or refresh the page."
+            );
+          }
         } else {
-          // Display no results message
-          setError('Sorry! There are no results with that search term. Please try again or refresh the page.')
+          // Display Error
+          setError(
+            "There was an issue fetching the data. Please try again later."
+          );
         }
-      } else {
+      } catch {
         // Display Error
-        setError("There was an issue fetching the data. Please try again later.");
+        setLoading(false);
+        setError(
+          "There was an issue fetching the data. Please try again later."
+        );
       }
     } else {
       if (searchResults) {
@@ -89,7 +98,7 @@ export default function Home() {
   const handleRefreshSearch = () => {
     setSearchResults(null);
     setSearchTerm("");
-    setError('');
+    setError("");
   };
 
   return initialLoader || loading ? (
@@ -112,13 +121,13 @@ export default function Home() {
 
         <View style={styles.searchContainer}>
           <TextInput
-          style={styles.searchInput}
+            style={styles.searchInput}
             placeholder="Enter a name"
             value={searchTerm}
             onChangeText={setSearchTerm}
             onSubmitEditing={handleSearch}
           />
-          <Button title="Search" onPress={handleSearch} color='#14aea7'/>
+          <Button title="Search" onPress={handleSearch} color="#14aea7" />
         </View>
 
         <View style={styles.listContainer}>
@@ -178,10 +187,8 @@ export default function Home() {
           {/* Display errors */}
           {error ? (
             <View style={styles.noResults}>
-              <Text style={styles.noResultsText}>
-                {error}
-              </Text>
-              <Button title='Refresh' onPress={handleRefreshSearch}/>
+              <Text style={styles.noResultsText}>{error}</Text>
+              <Button title="Refresh" onPress={handleRefreshSearch} />
             </View>
           ) : null}
         </View>
@@ -194,19 +201,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
-    
   },
   searchContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 5,
-    // backgroundColor: 'red',
-    width: '100%',
+    width: "100%",
     marginVertical: 10,
     paddingBottom: 10,
-    shadowColor: '#676767',
-    shadowOffset: {width: -2, height: 4},
+    shadowColor: "#676767",
+    shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
   },
@@ -215,11 +220,11 @@ const styles = StyleSheet.create({
     fontFamily: "Trebuchet MS",
     fontSize: 16,
     paddingLeft: 4,
-    color: '#676767',
-  }, 
+    color: "#676767",
+  },
   searchButton: {
     width: 300,
-    borderRadius: '50%'
+    borderRadius: "50%",
   },
   listContainer: {
     flex: 1,
@@ -239,6 +244,6 @@ const styles = StyleSheet.create({
     fontFamily: "Trebuchet MS",
     textAlign: "center",
     color: "#083533",
-    marginBottom: 10
+    marginBottom: 10,
   },
 });
