@@ -6,7 +6,7 @@ const PersonItem = props => {
   const router = useRouter();
 
   const handleNavigate = () => {
-    router.push(`/PersonDetails/${personDetails.id}`);
+    router.push(`/PersonDetails/${personDetails.name}`);
   };
 
   return (

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import apiFetch from "../services/apiFetch";
+import { usePeople } from '../contexts/peopleContext';
 
 const initialData = {
   data: [],
@@ -18,6 +19,8 @@ const usePagination = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const { people, setPeople } = usePeople();
+
   const fetchData = async (page, perPage = 10) => {
     try {
       const res = await apiFetch("https://swapi.dev/api/people/", {
@@ -33,6 +36,8 @@ const usePagination = () => {
         pageNo: page,
         totalPages: Math.ceil(resultOld.count / perPage),
       };
+
+      setPeople([...people, ...resultOld.results]);
 
       setData(page === 1 ? result.data : [...data, ...result.data]);
       setTotalResult(result.totalResult);

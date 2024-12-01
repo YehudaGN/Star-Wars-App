@@ -16,6 +16,8 @@ import usePagination from "../hooks/usePagination";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import searchPerson from "../services/searchPerson";
+import { usePeople } from '../contexts/peopleContext';
+
 
 const windowDimensions = Dimensions.get("window");
 const screenDimensions = Dimensions.get("screen");
@@ -31,6 +33,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
+  const { people } = usePeople();
+  // console.log('people', people)
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
