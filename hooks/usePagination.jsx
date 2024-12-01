@@ -76,6 +76,7 @@ const usePagination = () => {
     handleRefresh,
     loadNextPage,
     initialLoader,
+    fetchError: ''
   };
 
 };

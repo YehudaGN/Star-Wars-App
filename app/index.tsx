@@ -50,7 +50,7 @@ export default function Home() {
     handleRefresh,
     loadNextPage,
     initialLoader,
-    fetchError
+    fetchError,
   } = usePagination();
 
   const renderLoadingFooter = () => {
@@ -109,12 +109,6 @@ export default function Home() {
   ) : (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Stack.Screen
-          options={{
-            title: "Star Wars Info",
-          }}
-        />
-
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
@@ -184,12 +178,11 @@ export default function Home() {
           {error || fetchError ? (
             <View style={styles.noResults}>
               <Text style={styles.noResultsText}>{error || fetchError}</Text>
-              {
-                error ? 
+              {error ? (
                 <Button title="Refresh" onPress={handleRefreshSearch} />
-                : 
+              ) : (
                 <Button title="Refresh" onPress={handleRefresh} />
-              }
+              )}
             </View>
           ) : null}
         </View>
@@ -200,27 +193,29 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   initialLoader: {
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }, 
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
   },
   searchContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
     gap: 5,
     width: "100%",
-    marginVertical: 10,
-    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: '#849494',
+    paddingVertical: 10,
     shadowColor: "#676767",
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
+    elevation: 1
   },
   searchInput: {
     width: 250,
