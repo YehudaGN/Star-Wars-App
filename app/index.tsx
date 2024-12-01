@@ -28,8 +28,10 @@ export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(null);
-  const [noSearchResultsInTerm, setNoSearchResultsInTerm] = useState(false);
+  // const [noSearchResultsInTerm, setNoSearchResultsInTerm] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -66,15 +68,18 @@ export default function Home() {
         const jsonResponse = await res.json();
         console.log("json", jsonResponse);
         if (jsonResponse.count > 0) {
+          // Display search results
           setSearchResults(jsonResponse.results);
-          setNoSearchResultsInTerm(false);
-          // display results
+          setError('');
         } else {
-          // render sorry no results
-          setNoSearchResultsInTerm(true);
+          // Display no results message
+          console.log('yooo?')
+          // setNoSearchResultsInTerm(true);
+          setError('Sorry! There are no results with that search term. Please try again or refresh the page.')
         }
       } else {
         // render error
+        setError("There was an issue fetching the data. Please try again later.");
       }
     } else {
       if (searchResults) {
@@ -86,6 +91,7 @@ export default function Home() {
   const handleRefreshSearch = () => {
     setSearchResults(null);
     setSearchTerm("");
+    setError('');
   };
 
   return initialLoader || loading ? (
@@ -112,14 +118,14 @@ export default function Home() {
             placeholder="Enter a name"
             value={searchTerm}
             onChangeText={setSearchTerm}
-            // submit?
+            onSubmitEditing={handleSearch}
           />
           <Button title="Search" onPress={handleSearch} color='#14aea7'/>
         </View>
 
         <View style={styles.listContainer}>
           {/* Don't display if the user is searching for a specific person */}
-          {!searchResults && (
+          {!searchResults && !error && (
             <FlatList
               style={{
                 width: dimensions.window.width,
@@ -127,7 +133,6 @@ export default function Home() {
               }}
               data={data}
               renderItem={({ item }) => {
-                // console.log(item);
                 const personDetails = {
                   name: item.name,
                   birthYear: item.birth_year,
@@ -147,7 +152,8 @@ export default function Home() {
               }
             />
           )}
-          {searchResults && !noSearchResultsInTerm && (
+          {/* Display search results */}
+          {searchResults && !error && (
             <FlatList
               style={{
                 width: dimensions.window.width,
@@ -171,12 +177,13 @@ export default function Home() {
               }
             />
           )}
-          {searchResults && noSearchResultsInTerm && (
+          {/* Display errors */}
+          {error && (
             <View style={styles.noResults}>
               <Text style={styles.noResultsText}>
-                Sorry! There are no results with that search term. Please try
-                again or refresh the page.
+                {error}
               </Text>
+              <Button title='Refresh' onPress={handleRefreshSearch}/>
             </View>
           )}
         </View>
@@ -234,14 +241,6 @@ const styles = StyleSheet.create({
     fontFamily: "Trebuchet MS",
     textAlign: "center",
     color: "#083533",
+    marginBottom: 10
   },
-  // item: {
-  //   backgroundColor: '#f9c2ff',
-  //   padding: 20,
-  //   marginVertical: 8,
-  //   marginHorizontal: 16,
-  // },
-  // title: {
-  //   fontSize: 32,
-  // },
 });
