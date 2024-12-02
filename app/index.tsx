@@ -14,7 +14,6 @@ import {
 import PersonItem from "../components/PersonItem";
 import usePagination from "../hooks/usePagination";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
 import searchPerson from "../services/searchPerson";
 import { usePeople } from '../contexts/peopleContext';
 
@@ -27,14 +26,12 @@ export default function Home() {
     window: windowDimensions,
     screen: screenDimensions,
   });
-
+  const { people, setPeople } = usePeople();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
-  const { people } = usePeople();
-  // console.log('people', people)
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -73,6 +70,7 @@ export default function Home() {
           if (jsonResponse.count > 0) {
             // Display search results
             setSearchResults(jsonResponse.results);
+            setPeople([...people, ...jsonResponse.results])
             setError("");
           } else {
             // Display no results message
@@ -136,9 +134,8 @@ export default function Home() {
               renderItem={({ item }) => {
                 const personDetails = {
                   name: item.name,
-                  birthYear: item.birth_year,
-                  gender: item.gender[0].toUpperCase() + item.gender.slice(1),
-                  id: item.url.match(/\/people\/(\d+)\//)[1],
+                  birthYear: item.birth_year === 'unknown' ? 'Unknown' : item.birth_year,
+                  gender: item.gender === 'n/a' ? 'N/A' : item.gender[0].toUpperCase() + item.gender.slice(1),
                 };
                 return <PersonItem personDetails={personDetails} />;
               }}

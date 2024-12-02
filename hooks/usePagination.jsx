@@ -22,6 +22,7 @@ const usePagination = () => {
   const { people, setPeople } = usePeople();
 
   const fetchData = async (page, perPage = 10) => {
+    
     try {
       const res = await apiFetch("https://swapi.dev/api/people/", {
         key: "page",
