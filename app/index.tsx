@@ -144,7 +144,11 @@ export default function Home() {
                 return <PersonItem personDetails={personDetails} />;
               }}
               ListFooterComponent={renderLoadingFooter}
-              onEndReached={loadNextPage}
+              onEndReached={() => {
+                if (totalResult > data.length) {
+                  loadNextPage();
+                }
+              }}
               onEndReachedThreshold={0.1}
               refreshControl={
                 <RefreshControl
