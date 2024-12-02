@@ -177,11 +177,11 @@ const PersonDetails = () => {
                   // Homeworld Details
                   <PersonDetailItem
                     item={{
-                      Homeworld: homeworld.name,
+                      Homeworld: capitalize(homeworld.name),
                       Climate: capitalize(homeworld.climate),
-                      Gravity: homeworld.gravity,
+                      Gravity: capitalize(homeworld.gravity),
                       "Orbital Period": `${homeworld.orbital_period} days`,
-                      Population: parseInt(
+                      Population: homeworld.population === 'unknown' ? 'Unknown' : parseInt(
                         homeworld.population,
                         10
                       ).toLocaleString(),
