@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import apiFetch from "../services/apiFetch";
-import { usePeople } from '../contexts/peopleContext';
+import { usePeople } from "../contexts/peopleContext";
 
 const initialData = {
   data: [],
@@ -22,11 +22,10 @@ const usePagination = () => {
   const { people, setPeople } = usePeople();
 
   const fetchData = async (page, perPage = 10) => {
-    
     try {
       const res = await apiFetch("https://swapi.dev/api/people/", {
         key: "page",
-        value: pageNo,
+        value: page,
       });
       const resultOld = await res.json();
 
@@ -37,19 +36,21 @@ const usePagination = () => {
         pageNo: page,
         totalPages: Math.ceil(resultOld.count / perPage),
       };
-
-      setPeople([...people, ...resultOld.results]);
-
+        if (page) {
+          setPeople(...result.data);
+        } else {
+          setPeople([...people, ...result.data]);
+        }
       setData(page === 1 ? result.data : [...data, ...result.data]);
       setTotalResult(result.totalResult);
       setPageNo(result.pageNo);
       setTotalPages(result.totalPages);
     } catch {
-        return {
-            fetchError:
-              "There was an issue fetching the data. Please try again later.",
-              handleRefresh
-          };
+      return {
+        fetchError:
+          "There was an issue fetching the data. Please try again later.",
+        handleRefresh,
+      };
     } finally {
       setRefreshing(false);
       setLoadingMore(false);
@@ -68,6 +69,7 @@ const usePagination = () => {
   }, []);
 
   const loadNextPage = () => {
+  
     if (!loadingMore && pageNo < totalPages) {
       setLoadingMore(true);
       fetchData(pageNo + 1);
@@ -82,9 +84,8 @@ const usePagination = () => {
     handleRefresh,
     loadNextPage,
     initialLoader,
-    fetchError: ''
+    fetchError: "",
   };
-
 };
 
 export default usePagination;

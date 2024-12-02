@@ -197,9 +197,9 @@ const PersonDetails = () => {
                   <PersonDetailItem
                     item={{
                       Species: species.name,
-                      Classification: species.classification,
-                      Designation: species.designation,
-                      Language: species.language,
+                      Classification: capitalize(species.classification),
+                      Designation: capitalize(species.designation),
+                      Language: capitalize(species.language),
                       "Eye Colors": capitalizeMultipleWordsInString(
                         species.eye_colors
                       ),

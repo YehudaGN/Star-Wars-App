@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   detail: {
     color: "#94A3B8",
-    minWidth: 80,
+    minWidth: 110,
     fontSize: 16,
   },
   value: {

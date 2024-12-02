@@ -48,11 +48,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 10,
     marginVertical: 4,
-    shadowColor: "#676767",
-    shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
+    boxShadow: `-2px 4px 6px rgba(103, 103, 103, 0.2)`,
   },
   details: {
     display: "flex",
