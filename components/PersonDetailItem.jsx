@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
     color: "#F3F4F6",
   },
   header: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 600,
-    fontFamily: "Georgia",
+    fontFamily: "Trebuchet MS",
   },
 });
 

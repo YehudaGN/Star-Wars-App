@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     display: "flex",
     gap: 5,
     width: "95%",
-    minWidth: 320,
+    minWidth: 300,
     maxWidth: 767,
   },
   noResults: {

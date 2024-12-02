@@ -62,12 +62,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     fontFamily: "Trebuchet MS",
+    width: 80
   },
   value: {
     color: "#F3F4F6",
     fontSize: 14,
     fontWeight: 500,
-    fontFamily: "Georgia",
+    fontFamily: "Trebuchet MS",
   },
   nameLabel: {
     fontSize: 24,

@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
     gap: 5,
     width: "100%",
     paddingVertical: 10,
+    paddingHorizontal: 5,
     boxShadow: `-2px 4px 6px rgba(103, 103, 103, 0.2)`,
   },
   searchInput: {
