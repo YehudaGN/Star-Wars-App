@@ -2,7 +2,6 @@ import {
   Button,
   Text,
   View,
-  FlatList,
   ActivityIndicator,
   Dimensions,
   StyleSheet,
@@ -10,12 +9,13 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { Stack, usePathname } from "expo-router";
+import { usePathname } from "expo-router";
 import { useEffect, useState } from "react";
 import { usePeople } from "../../contexts/peopleContext";
 import apiFetch from "../../services/apiFetch";
 import searchPerson from "../../services/searchPerson";
 import { useRouter } from "expo-router";
+import PersonDetailItem from "../../components/PersonDetailItem";
 
 const windowDimensions = Dimensions.get("window");
 const screenDimensions = Dimensions.get("screen");
@@ -159,179 +159,62 @@ const PersonDetails = () => {
           {person && (
             <View style={styles.parentContainer}>
               <View style={styles.container}>
-                <View style={styles.sectionContainer}>
-                  <Text style={[styles.detail, styles.header, styles.value]}>
-                    {person.name}
-                  </Text>
-                  <View style={styles.detailContainer}>
-                    <Text style={[styles.detail, styles.key]}>Birth Year:</Text>
-                    <Text style={[styles.detail, styles.value]}>
-                      {person.birth_year === "unknown"
+                {/* Person Details */}
+                <PersonDetailItem
+                  header={person.name}
+                  item={{
+                    "Birth Year":
+                      person.birth_year === "unknown"
                         ? "Unknown"
-                        : person.birth_year}
-                    </Text>
-                  </View>
-                  <View style={styles.detailContainer}>
-                    <Text style={[styles.detail, styles.key]}>Gender:</Text>
-                    <Text style={[styles.detail, styles.value]}>
-                      {capitalize(person.gender)}
-                    </Text>
-                  </View>
-                  <View style={styles.detailContainer}>
-                    <Text style={[styles.detail, styles.key]}>Eye Color:</Text>
-                    <Text style={[styles.detail, styles.value]}>
-                      {capitalize(person.eye_color)}
-                    </Text>
-                  </View>
-                  <View style={styles.detailContainer}>
-                    <Text style={[styles.detail, styles.key]}>Skin Color:</Text>
-                    <Text style={[styles.detail, styles.value]}>
-                      {capitalize(person.skin_color)}
-                    </Text>
-                  </View>
-                  <View style={styles.detailContainer}>
-                    <Text style={[styles.detail, styles.key]}>Hair Color:</Text>
-                    <Text style={[styles.detail, styles.value]}>
-                      {capitalize(person.hair_color)}
-                    </Text>
-                  </View>
-                  <View style={styles.detailContainer}>
-                    <Text style={[styles.detail, styles.key]}>Height:</Text>
-                    <Text style={[styles.detail, styles.value]}>
-                      {convertHeightToFeet(person.height)}
-                    </Text>
-                  </View>
-                  <View style={styles.detailContainer}>
-                    <Text style={[styles.detail, styles.key]}>Weight:</Text>
-                    <Text style={[styles.detail, styles.value]}>
-                      {convertWeightToLbs(person.mass)}
-                    </Text>
-                  </View>
-                </View>
+                        : person.birth_year,
+                    Gender: capitalize(person.gender),
+                    "Eye Color": capitalize(person.eye_color),
+                    "Skin Color": capitalize(person.skin_color),
+                    "Hair Color": capitalize(person.hair_color),
+                    Height: convertHeightToFeet(person.height),
+                    Weight: convertWeightToLbs(person.mass),
+                  }}
+                />
 
                 {homeworld && (
-                  <View style={[styles.sectionContainer]}>
-                    {/* details on homeworld */}
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Homeworld:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {homeworld.name}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>Climate:</Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalize(homeworld.climate)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>Gravity:</Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {homeworld.gravity}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Orbital Period:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {homeworld.orbital_period} days
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Population:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {parseInt(homeworld.population, 10).toLocaleString()}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>Terrain:</Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalize(homeworld.terrain)}
-                      </Text>
-                    </View>
-                  </View>
+                  // Homeworld Details
+                  <PersonDetailItem
+                    item={{
+                      Homeworld: homeworld.name,
+                      Climate: capitalize(homeworld.climate),
+                      Gravity: homeworld.gravity,
+                      "Orbital Period": `${homeworld.orbital_period} days`,
+                      Population: parseInt(
+                        homeworld.population,
+                        10
+                      ).toLocaleString(),
+                      Terrain: capitalize(homeworld.terrain),
+                    }}
+                  />
                 )}
-                {/* TODO: Refactor these into reusable components */}
                 {species && (
-                  <View style={styles.sectionContainer}>
-                    {/* details on species */}
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>Species:</Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {species.name}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Classification:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalize(species.classification)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Designation:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalize(species.designation)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>Language:</Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalize(species.language)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Eye Colors:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalizeMultipleWordsInString(species.eye_colors)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Hair Colors:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalizeMultipleWordsInString(species.hair_colors)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Skin Colors:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalizeMultipleWordsInString(species.skin_colors)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Average Height:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {convertHeightToFeet(species.average_height)}
-                      </Text>
-                    </View>
-                    <View style={styles.detailContainer}>
-                      <Text style={[styles.detail, styles.key]}>
-                        Average Lifespan:
-                      </Text>
-                      <Text style={[styles.detail, styles.value]}>
-                        {capitalizeMultipleWordsInString(
-                          species.average_lifespan
-                        )}{" "}
-                        years
-                      </Text>
-                    </View>
-                  </View>
+                  // Species Details
+                  <PersonDetailItem
+                    item={{
+                      Species: species.name,
+                      Classification: species.classification,
+                      Designation: species.designation,
+                      Language: species.language,
+                      "Eye Colors": capitalizeMultipleWordsInString(
+                        species.eye_colors
+                      ),
+                      "Hair Colors": capitalizeMultipleWordsInString(
+                        species.hair_colors
+                      ),
+                      "Skin Colors": capitalizeMultipleWordsInString(
+                        species.skin_colors
+                      ),
+                      "Average Height": convertHeightToFeet(
+                        species.average_height
+                      ),
+                      "Average Lifespan": `${species.average_lifespan} years`,
+                    }}
+                  />
                 )}
               </View>
               {loading && (
@@ -375,36 +258,6 @@ const styles = StyleSheet.create({
     width: "95%",
     minWidth: 320,
     maxWidth: 767,
-  },
-  sectionContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-    padding: 20,
-    backgroundColor: "#030712",
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#CBD5E1",
-    borderRadius: 20,
-  },
-  detailContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 10,
-  },
-  detail: {
-    color: "#94A3B8",
-    minWidth: 80,
-    fontSize: 16,
-  },
-  key: {},
-  value: {
-    color: "#F3F4F6",
-  },
-  header: {
-    fontSize: 28,
-    fontWeight: 600,
-    fontFamily: "Georgia",
   },
   noResults: {
     display: "flex",
