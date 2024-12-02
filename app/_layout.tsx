@@ -1,7 +1,9 @@
 import { Stack } from "expo-router";
 import { PeopleProvider } from "../contexts/peopleContext";
-
+import { Text, View, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 export default function RootLayout() {
+  const router = useRouter();
   return (
     <PeopleProvider>
       <Stack
@@ -13,7 +15,15 @@ export default function RootLayout() {
           headerTitleStyle: {
             fontWeight: "bold",
           },
-          title: "Star Wars Info",
+          headerTitle: () => (
+            <TouchableOpacity onPress={() => router.replace("/")}>
+              <Text
+                style={{ fontWeight: "bold", color: "white", fontSize: 26 }}
+              >
+                Star Wars Info
+              </Text>
+            </TouchableOpacity>
+          ),
         }}
       >
         <Stack.Screen name="PersonDetails/[id]" options={{}} />

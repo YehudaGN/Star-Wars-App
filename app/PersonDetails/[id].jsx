@@ -14,6 +14,7 @@ import { Stack, usePathname } from "expo-router";
 import { useEffect, useState } from "react";
 import { usePeople } from "../../contexts/peopleContext";
 import apiFetch from "../../services/apiFetch";
+import searchPerson from "../../services/searchPerson";
 import { useRouter } from "expo-router";
 
 const windowDimensions = Dimensions.get("window");
@@ -32,6 +33,8 @@ const PersonDetails = () => {
   const [species, setSpecies] = useState(null);
   const [homeworld, setHomeworld] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoader, setInitialLoader] = useState(false);
+  const [failedToFetch, setFailedToFetch] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,14 +47,39 @@ const PersonDetails = () => {
 
     const fetchedPerson = people.find(person => person.name === personName);
     setPerson(fetchedPerson);
-    // TODO: fetch person if person not there
     if (fetchedPerson) {
-      getAdditionalInfo(fetchedPerson.species[0], setSpecies);
-      getAdditionalInfo(fetchedPerson.homeworld, setHomeworld);
+      fetchAdditionalData(fetchedPerson);
+    } else {
+      fetchPerson();
     }
 
     return () => subscription?.remove();
   }, [pathname]);
+
+  const fetchPerson = async () => {
+    let jsonResponse;
+    try {
+      setInitialLoader(true);
+      const res = await searchPerson(personName);
+      if (res.status === 200) {
+        jsonResponse = await res.json();
+        setPerson(jsonResponse.results[0]);
+        setInitialLoader(false);
+      }
+    } catch {
+      setFailedToFetch(true);
+      setInitialLoader(false);
+    } finally {
+      if (jsonResponse) {
+        fetchAdditionalData(jsonResponse.results[0]);
+      }
+    }
+  };
+
+  const fetchAdditionalData = person => {
+    getAdditionalInfo(person.species[0], setSpecies);
+    getAdditionalInfo(person.homeworld, setHomeworld);
+  };
 
   const getAdditionalInfo = async (path, setInfo) => {
     if (path) {
@@ -89,15 +117,13 @@ const PersonDetails = () => {
   };
 
   const capitalizeMultipleWordsInString = string => {
-    if (string !== "n/a") {
-      const splitWords = string.split(", ");
-      return splitWords.map(word => capitalize(word)).join(", ");
-    } else {
-      return "N/A";
-    }
+    if (string === "n/a") return "N/A";
+    const splitWords = string.split(", ");
+    return splitWords.map(word => capitalize(word)).join(", ");
   };
 
   const convertHeightToFeet = height => {
+    if (height === "n/a") return "N/A";
     if (height) {
       const centimeters = Number(height.split(",").join(""));
       const totalInches = centimeters / 2.54; // Convert cm to inches
@@ -118,13 +144,19 @@ const PersonDetails = () => {
     }
   };
 
-  if (person) {
-    return (
-      <SafeAreaProvider>
-        <SafeAreaView
-          style={[styles.safeArea, { width: dimensions.window.width }]}
-        >
-          <ScrollView>
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView
+        style={[styles.safeArea, { width: dimensions.window.width }]}
+      >
+        <ScrollView>
+          {initialLoader && (
+            <View style={styles.loader}>
+              <ActivityIndicator size="large" />
+              <Text style={styles.loadingText}>Loading {personName} Data</Text>
+            </View>
+          )}
+          {person && (
             <View style={styles.parentContainer}>
               <View style={styles.container}>
                 <View style={styles.sectionContainer}>
@@ -309,22 +341,21 @@ const PersonDetails = () => {
                 </View>
               )}
             </View>
-          </ScrollView>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
-  } else {
-    return (
-      <View style={styles.noResults}>
-        <Text style={styles.noResultsText}>No Person</Text>
-        <Button
-          title="Return to list"
-          color="#0F172A"
-          onPress={handleNavigate}
-        />
-      </View>
-    );
-  }
+          )}
+          {failedToFetch && (
+            <View style={styles.noResults}>
+              <Text style={styles.noResultsText}>No Person</Text>
+              <Button
+                title="Return to list"
+                color="#0F172A"
+                onPress={handleNavigate}
+              />
+            </View>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -395,6 +426,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 10,
   },
   loadingText: {
     fontFamily: "Trebuchet MS",

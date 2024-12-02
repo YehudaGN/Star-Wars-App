@@ -106,6 +106,7 @@ export default function Home() {
   return initialLoader || loading ? (
     <View style={styles.initialLoader}>
       <ActivityIndicator size="large" />
+      <Text style={styles.initialLoaderText}>Loading list</Text>
     </View>
   ) : (
     <SafeAreaProvider>
@@ -210,6 +211,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FAFAF9",
+  },
+  initialLoaderText: {
+    fontFamily: "Trebuchet MS",
+    textAlign: "center",
+    color: "#083533",
+    marginTop: 20,
   },
   container: {
     flex: 1,
