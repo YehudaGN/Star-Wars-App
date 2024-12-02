@@ -166,7 +166,7 @@ const PersonDetails = () => {
                         : person.birth_year,
                     Gender: capitalize(person.gender),
                     "Eye Color": capitalize(person.eye_color),
-                    "Skin Color": capitalize(person.skin_color),
+                    "Skin Color": capitalizeMultipleWordsInString(person.skin_color),
                     "Hair Color": capitalize(person.hair_color),
                     Height: convertHeightToFeet(person.height),
                     Weight: convertWeightToLbs(person.mass),
@@ -185,7 +185,7 @@ const PersonDetails = () => {
                         homeworld.population,
                         10
                       ).toLocaleString(),
-                      Terrain: capitalize(homeworld.terrain),
+                      Terrain: capitalizeMultipleWordsInString(homeworld.terrain),
                     }}
                   />
                 )}
@@ -209,7 +209,7 @@ const PersonDetails = () => {
                       "Average Height": convertHeightToFeet(
                         species.average_height
                       ),
-                      "Average Lifespan": `${species.average_lifespan} years`,
+                      "Average Lifespan": species.average_lifespan === 'indefinite' ? 'Indefinite' :`${species.average_lifespan} years`,
                     }}
                   />
                 )}

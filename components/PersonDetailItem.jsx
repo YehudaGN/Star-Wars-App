@@ -41,11 +41,13 @@ const styles = StyleSheet.create({
   },
   detail: {
     color: "#94A3B8",
-    minWidth: 110,
+    minWidth: 100,
+    maxWidth: 250,
     fontSize: 16,
   },
   value: {
     color: "#F3F4F6",
+    textWrap: 'wrap',
   },
   header: {
     fontSize: 30,

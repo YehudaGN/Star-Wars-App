@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
   list: {
     width: "100%",
     display: "flex",
+    marginTop: 10,
   },
   noResults: {
     display: "flex",
