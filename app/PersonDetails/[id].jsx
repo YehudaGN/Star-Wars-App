@@ -31,6 +31,7 @@ const PersonDetails = () => {
   const { people } = usePeople();
   const [species, setSpecies] = useState(null);
   const [homeworld, setHomeworld] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -55,7 +56,9 @@ const PersonDetails = () => {
   const getAdditionalInfo = async (path, setInfo) => {
     if (path) {
       try {
+        setLoading(true);
         const res = await apiFetch(path);
+        setLoading(false);
         if (res.status === 200) {
           const jsonResults = await res.json();
           setInfo(jsonResults);
@@ -64,6 +67,7 @@ const PersonDetails = () => {
         }
       } catch {
         setInfo(null);
+        setLoading(false);
       }
     } else {
       setInfo(null);
@@ -298,6 +302,12 @@ const PersonDetails = () => {
                   </View>
                 )}
               </View>
+              {loading && (
+                <View style={styles.loader}>
+                  <ActivityIndicator size="large" />
+                  <Text style={styles.loadingText}>Loading More Data</Text>
+                </View>
+              )}
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -305,9 +315,13 @@ const PersonDetails = () => {
     );
   } else {
     return (
-      <View>
-        <Text>No Person</Text>
-        <Button title="Return to list" onPress={handleNavigate} />
+      <View style={styles.noResults}>
+        <Text style={styles.noResultsText}>No Person</Text>
+        <Button
+          title="Return to list"
+          color="#0F172A"
+          onPress={handleNavigate}
+        />
       </View>
     );
   }
@@ -360,6 +374,33 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 600,
     fontFamily: "Georgia",
+  },
+  noResults: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+  },
+  noResultsText: {
+    width: "95%",
+    fontSize: 16,
+    fontFamily: "Trebuchet MS",
+    textAlign: "center",
+    color: "#083533",
+    marginBottom: 10,
+  },
+  loader: {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontFamily: "Trebuchet MS",
+    textAlign: "center",
+    color: "#083533",
+    marginTop: 20,
   },
 });
 

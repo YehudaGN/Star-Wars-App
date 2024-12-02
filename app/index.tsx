@@ -15,8 +15,7 @@ import PersonItem from "../components/PersonItem";
 import usePagination from "../hooks/usePagination";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import searchPerson from "../services/searchPerson";
-import { usePeople } from '../contexts/peopleContext';
-
+import { usePeople } from "../contexts/peopleContext";
 
 const windowDimensions = Dimensions.get("window");
 const screenDimensions = Dimensions.get("screen");
@@ -70,7 +69,7 @@ export default function Home() {
           if (jsonResponse.count > 0) {
             // Display search results
             setSearchResults(jsonResponse.results);
-            setPeople([...people, ...jsonResponse.results])
+            setPeople([...people, ...jsonResponse.results]);
             setError("");
           } else {
             // Display no results message
@@ -134,8 +133,12 @@ export default function Home() {
               renderItem={({ item }) => {
                 const personDetails = {
                   name: item.name,
-                  birthYear: item.birth_year === 'unknown' ? 'Unknown' : item.birth_year,
-                  gender: item.gender === 'n/a' ? 'N/A' : item.gender[0].toUpperCase() + item.gender.slice(1),
+                  birthYear:
+                    item.birth_year === "unknown" ? "Unknown" : item.birth_year,
+                  gender:
+                    item.gender === "n/a"
+                      ? "N/A"
+                      : item.gender[0].toUpperCase() + item.gender.slice(1),
                 };
                 return <PersonItem personDetails={personDetails} />;
               }}
@@ -233,6 +236,7 @@ const styles = StyleSheet.create({
     fontFamily: "Trebuchet MS",
     fontSize: 16,
     paddingLeft: 4,
+    paddingVertical: 8,
     color: "#676767",
   },
   searchButton: {
