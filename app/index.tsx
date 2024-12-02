@@ -17,30 +17,13 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import searchPerson from "../services/searchPerson";
 import { usePeople } from "../contexts/peopleContext";
 
-const windowDimensions = Dimensions.get("window");
-const screenDimensions = Dimensions.get("screen");
-
 export default function Home() {
-  const [dimensions, setDimensions] = useState({
-    window: windowDimensions,
-    screen: screenDimensions,
-  });
   const { people, setPeople } = usePeople();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener(
-      "change",
-      ({ window, screen }) => {
-        setDimensions({ window, screen });
-      }
-    );
-    return () => subscription?.remove();
-  }, []);
 
   const {
     data,
@@ -126,10 +109,7 @@ export default function Home() {
           {/* Don't display if the user is searching for a specific person */}
           {!searchResults && !error && !fetchError && (
             <FlatList
-              style={{
-                width: dimensions.window.width,
-                display: "flex",
-              }}
+              style={styles.list}
               data={data}
               renderItem={({ item }) => {
                 const personDetails = {
@@ -161,10 +141,7 @@ export default function Home() {
           {/* Display search results */}
           {searchResults && !error && !fetchError && (
             <FlatList
-              style={{
-                width: dimensions.window.width,
-                display: "flex",
-              }}
+              style={styles.list}
               data={searchResults}
               renderItem={({ item }) => {
                 const personDetails = {
@@ -254,6 +231,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 2,
+  },
+  list: {
+    width: "100%",
+    display: "flex",
   },
   noResults: {
     display: "flex",

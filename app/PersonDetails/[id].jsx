@@ -145,9 +145,7 @@ const PersonDetails = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView
-        style={[styles.safeArea, { width: dimensions.window.width }]}
-      >
+      <SafeAreaView style={styles.safeArea}>
         <ScrollView>
           {initialLoader && (
             <View style={styles.loader}>
