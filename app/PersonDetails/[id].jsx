@@ -44,7 +44,6 @@ const PersonDetails = () => {
         setDimensions({ window, screen });
       }
     );
-
     const fetchedPerson = people.find(person => person.name === personName);
     setPerson(fetchedPerson);
     if (fetchedPerson) {

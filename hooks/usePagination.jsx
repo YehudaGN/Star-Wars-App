@@ -36,11 +36,11 @@ const usePagination = () => {
         pageNo: page,
         totalPages: Math.ceil(resultOld.count / perPage),
       };
-        if (page) {
-          setPeople(...result.data);
-        } else {
-          setPeople([...people, ...result.data]);
-        }
+      if (page) {
+        setPeople(result.data);
+      } else {
+        setPeople([...people, ...result.data]);
+      }
       setData(page === 1 ? result.data : [...data, ...result.data]);
       setTotalResult(result.totalResult);
       setPageNo(result.pageNo);
@@ -69,7 +69,6 @@ const usePagination = () => {
   }, []);
 
   const loadNextPage = () => {
-  
     if (!loadingMore && pageNo < totalPages) {
       setLoadingMore(true);
       fetchData(pageNo + 1);
